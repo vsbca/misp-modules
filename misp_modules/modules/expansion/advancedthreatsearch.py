@@ -17,6 +17,7 @@ moduleconfig = []
 
 # Avoid adding windows update to enrichment etc.
 def isBlacklisted(value):
+    #get the list of blacklist IP addresses from the Threat Intelligence server
     blacklist = ['8.8.8.8', '255.255.255.255', '192.168.56.' , 'time.windows.com']
 
     for b in blacklist:
@@ -33,7 +34,7 @@ def valid_domain(hostname):
     if len(hostname) > 255:
         return False
     if hostname[-1] == ".":
-        hostname = hostname[:-1] # strip exactly one dot from the right, if present
+        hostname = hostname[:-1]     # strip exactly one dot from the right, if present
     allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
     return all(allowed.match(x) for x in hostname.split("."))
 
@@ -79,7 +80,7 @@ def handler(q=False):
 def getHash(hash):
 
     ret = []
-    req = json.loads(requests.get("https://www.threatcrowd.org/searchApi/v2/file/report/?resource=" + hash).text)
+    req = json.loads(requests.get("https://www.example.com/searchApi/v2/file/report/?resource=" + hash).text)
 
     if "domains" in req:
         domains = req["domains"]
@@ -98,7 +99,7 @@ def getHash(hash):
 
 def getIP(ip):
     ret = []
-    req = json.loads( requests.get("https://www.threatcrowd.org/searchApi/v2/ip/report/?ip=" + ip).text )
+    req = json.loads( requests.get("https://www.example.com/searchApi/v2/ip/report/?ip=" + ip).text )
 
     if "resolutions" in req:
         for dns in req["resolutions"]:
@@ -117,7 +118,7 @@ def getIP(ip):
 
 def getEmail(email):
     ret = []
-    j = requests.get("https://www.threatcrowd.org/searchApi/v2/email/report/?email=" + email).text
+    j = requests.get("https://www.example.com/searchApi/v2/email/report/?email=" + email).text
     req = json.loads(j)
 
     if "domains" in req:
@@ -133,7 +134,7 @@ def getEmail(email):
 def getDomain(domain):
 
     ret = []
-    req = json.loads( requests.get("https://www.threatcrowd.org/searchApi/v2/domain/report/?domain=" + domain).text )
+    req = json.loads( requests.get("https://www.example.com/searchApi/v2/domain/report/?domain=" + domain).text )
 
     if "resolutions" in req:
         for dns in req["resolutions"]:

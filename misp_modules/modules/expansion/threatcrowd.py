@@ -8,8 +8,8 @@ mispattributes = {'input': ["hostname", "domain", "ip-src", "ip-dst", "md5", "sh
                   }
 
 # possible module-types: 'expansion', 'hover' or both
-moduleinfo = {'version': '1', 'author': 'chrisdoman',
-              'description': 'Get information from ThreatCrowd',
+moduleinfo = {'version': '1', 'author': 'VSBchrisdoman',
+              'description': 'VSB Get information from ThreatCrowd',
               'module-type': ['expansion']}
 
 moduleconfig = []

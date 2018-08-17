@@ -61,6 +61,7 @@ def findAll(data, keys):
             else:
                 if isinstance(data[key], (dict, list)):
                     a += findAll(data[key], keys)
+
     if isinstance(data, list):
         for i in data:
             a += findAll(i, keys)
@@ -70,13 +71,37 @@ def findAll(data, keys):
 def getMoreInfo(req, key):
     global limit
     r = []
-    # Get all hashes first
-    hashes = []
-    hashes = findAll(req, ["md5", "sha1", "sha256", "sha512","url","hostname","domain"])
-    r.append({"types": ["freetext"], "values": hashes})
-    print(r)
-    print("################# YOU GOT IT ##########")
-    return r
+
+    mispattr = []
+
+    if "data" in req:
+        test = req['data'][0]
+        for key, value in test.items():
+            if isinstance(value, dict):
+                for key, value in value.items():
+                    if isinstance(value, list):
+                        for items in value:
+                            if isinstance(items, dict):
+                                for key, value in items.items():
+                                    if key == "hostname":
+                                        mispattr.append({"types": ["domain"],"values": value})
+
+                                    elif key == "url":
+                                        mispattr.append({"types": ["url"], "values": value})
+
+                                    elif key == "ip":
+                                        mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
+
+                                    elif key == "sha256":
+                                        mispattr.append({"types": ["sha256"], "values": value})
+
+                                    elif key == "sha1":
+                                        mispattr.append({"types": ["sha"], "values": value})
+
+                                    elif key == "md5":
+                                        mispattr.append({"types": ["md5"], "values": value})
+    print(mispattr)
+    return mispattr
 
 #Defining the handler
 def handler(q=False):
@@ -142,18 +167,19 @@ def getHash(hash, key,request_type):
     Authorization_header = "Basic " + key
     headers = {'authorization': Authorization_header}
 
+
+    print("Inside get hash", enrichment_url)
+
     req = requests.get(enrichment_url, headers=headers, verify=False)
 
     try:
         req.raise_for_status()
         req = req.json()
+        print(req)
+
     except HTTPError as e:
         misperrors['error'] = str(e)
         return misperrors
-
-    if req["response_code"] == 0:
-        # Nothing found
-        return []
 
     return getMoreInfo(req, key)
 
@@ -220,4 +246,4 @@ def version():
     return moduleinfo
 
 
-#getIP("5.5.5.5", "api-key", "ip")
+getIP("5.5.5.5", "Y3lzaXZtaXNwOjdodEFSMlVAY2teQkwyJXo=", "ip")

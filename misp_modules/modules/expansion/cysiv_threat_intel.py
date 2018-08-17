@@ -246,4 +246,3 @@ def version():
     return moduleinfo
 
 
-getIP("5.5.5.5", "Y3lzaXZtaXNwOjdodEFSMlVAY2teQkwyJXo=", "ip")

@@ -52,26 +52,8 @@ def valid_domain(hostname):
     return all(allowed.match(x) for x in hostname.split("."))
 
 
-def findAll(data, keys):
-    a = []
-    if isinstance(data, dict):
-        for key in data.keys():
-            if key in keys:
-                a.append(data[key])
-            else:
-                if isinstance(data[key], (dict, list)):
-                    a += findAll(data[key], keys)
-
-    if isinstance(data, list):
-        for i in data:
-            a += findAll(i, keys)
-
-    return a
-
-def getMoreInfo(req, key):
+def getMoreInfo(req):
     global limit
-    r = []
-
     mispattr = []
 
     if "data" in req:
@@ -84,13 +66,16 @@ def getMoreInfo(req, key):
                             if isinstance(items, dict):
                                 for key, value in items.items():
                                     if key == "hostname":
-                                        mispattr.append({"types": ["domain"],"values": value})
+                                        if valid_domain(value):
+                                            mispattr.append({"types": ["domain"],"values": value})
 
                                     elif key == "url":
-                                        mispattr.append({"types": ["url"], "values": value})
+                                        if check_validurl(value):
+                                            mispattr.append({"types": ["url"], "values": value})
 
                                     elif key == "ip":
-                                        mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
+                                        if valid_ip(value):
+                                            mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
 
                                     elif key == "sha256":
                                         mispattr.append({"types": ["sha256"], "values": value})
@@ -100,7 +85,7 @@ def getMoreInfo(req, key):
 
                                     elif key == "md5":
                                         mispattr.append({"types": ["md5"], "values": value})
-    print(mispattr)
+    #print(mispattr)
     return mispattr
 
 #Defining the handler
@@ -181,7 +166,7 @@ def getHash(hash, key,request_type):
         misperrors['error'] = str(e)
         return misperrors
 
-    return getMoreInfo(req, key)
+    return getMoreInfo(req)
 
 def getIP(ip, key, request_type):
     global limit
@@ -208,7 +193,7 @@ def getIP(ip, key, request_type):
             toReturn.append({"types": ["domain"], "values": [res["hostname"]], "comment": comment % ip})
             # Pivot from here to find all domain info
 
-    toReturn += getMoreInfo(req, key)
+    toReturn += getMoreInfo(req)
     return toReturn
 
 
@@ -235,7 +220,7 @@ def getDomain(domain, key, request_type):
     if "subdomains" in req:
         for subd in req["subdomains"]:
             toReturn.append({"types": ["domain"], "values": [subd], "comment": comment % domain})
-    toReturn += getMoreInfo(req, key)
+    toReturn += getMoreInfo(req)
     return toReturn
 
 def introspection():
@@ -244,5 +229,4 @@ def introspection():
 def version():
     moduleinfo['config'] = moduleconfig
     return moduleinfo
-
 

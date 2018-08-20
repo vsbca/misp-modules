@@ -12,7 +12,7 @@ mispattributes = {
 
 #Cysiv Internal Threat Intelligence server
 moduleinfo = {'version': '0.1', 'author': 'Virendra Bisht',
-              'description': 'Query Cysiv Threat Intelligence Server',
+              'description': 'A Query to Cysiv Threat Intelligence Server',
               'module-type': ['expansion', 'hover']}
 
 # config fields that your code expects from the site admin
@@ -92,27 +92,28 @@ def getMoreInfo(req):
                         for items in value:
                             if isinstance(items, dict):
                                 for key, value in items.items():
-                                    if key == "hostname":
-                                        if valid_domain(value):
-                                            mispattr.append({"types": ["freetext"],"values": value})
-
-                                    elif key == "url":
-                                        if check_validurl(value):
-                                            mispattr.append({"types": ["freetext"], "values": value})
-
-                                    elif key == "ip":
-                                        if valid_ip(value):
-                                            mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
-
-                                    elif key == "sha256":
+                                    if key == "sha256":
                                         #sha256
                                         mispattr.append({"types": ["freetext"], "values": value})
 
-                                    elif key == "sha1":
-                                        mispattr.append({"types": ["freetext"], "values": value})
+                                    # elif key == "sha1":
+                                    #     mispattr.append({"types": ["freetext"], "values": value})
+                                    #
+                                    # elif key == "md5":
+                                    #     mispattr.append({"types": ["freetext"], "values": value})
+                                    #
+                                    # elif key == "hostname":
+                                    #     if valid_domain(value):
+                                    #         mispattr.append({"types": ["freetext"],"values": value})
+                                    #
+                                    # elif key == "url":
+                                    #     if check_validurl(value):
+                                    #         mispattr.append({"types": ["freetext"], "values": value})
+                                    #
+                                    # elif key == "ip":
+                                    #     if valid_ip(value):
+                                    #         mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
 
-                                    elif key == "md5":
-                                        mispattr.append({"types": ["freetext"], "values": value})
     print(mispattr)
     return mispattr
 

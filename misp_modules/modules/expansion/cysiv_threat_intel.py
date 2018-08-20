@@ -18,7 +18,7 @@ moduleinfo = {'version': '0.1', 'author': 'Virendra Bisht',
 # config fields that your code expects from the site admin
 moduleconfig = ['apikey', "event_limit"]
 limit = 5      # Default
-comment = '%s: Enriched via Threat Intelligence Server'
+comment = '%s: Enriched via Cysiv Threat Intelligence Server'
 
 enrich_server_url = "https://arango-connector-arango.dev.c4intel.com"
 

@@ -79,8 +79,6 @@ def getMoreInfo(req):
     :return:
     """
     global limit
-
-
     mispattr = []
 
     if "data" in req:
@@ -96,23 +94,23 @@ def getMoreInfo(req):
                                         #sha256
                                         mispattr.append({"types": ["freetext"], "values": value})
 
-                                    # elif key == "sha1":
-                                    #     mispattr.append({"types": ["freetext"], "values": value})
-                                    #
-                                    # elif key == "md5":
-                                    #     mispattr.append({"types": ["freetext"], "values": value})
-                                    #
-                                    # elif key == "hostname":
-                                    #     if valid_domain(value):
-                                    #         mispattr.append({"types": ["freetext"],"values": value})
-                                    #
-                                    # elif key == "url":
-                                    #     if check_validurl(value):
-                                    #         mispattr.append({"types": ["freetext"], "values": value})
-                                    #
-                                    # elif key == "ip":
-                                    #     if valid_ip(value):
-                                    #         mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
+                                    elif key == "sha1":
+                                        mispattr.append({"types": ["freetext"], "values": value})
+
+                                    elif key == "md5":
+                                        mispattr.append({"types": ["freetext"], "values": value})
+
+                                    elif key == "hostname":
+                                        if valid_domain(value):
+                                            mispattr.append({"types": ["freetext"],"values": value})
+
+                                    elif key == "url":
+                                        if check_validurl(value):
+                                            mispattr.append({"types": ["freetext"], "values": value})
+
+                                    elif key == "ip":
+                                        if valid_ip(value):
+                                            mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
 
     #print(mispattr)
     return mispattr
@@ -259,4 +257,3 @@ def version():
     moduleinfo['config'] = moduleconfig
     return moduleinfo
 
-getIP("5.5.5.5","Y3lzaXZtaXNwOjdodEFSMlVAY2teQkwyJXo=","ip")

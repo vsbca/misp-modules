@@ -12,7 +12,7 @@ mispattributes = {
 
 #Cysiv Internal Threat Intelligence server
 moduleinfo = {'version': '0.1', 'author': 'Virendra Bisht',
-              'description': 'A Query to Cysiv Threat Intelligence Server',
+              'description': 'Query to Cysiv Threat Intelligence Server',
               'module-type': ['expansion', 'hover']}
 
 # config fields that your code expects from the site admin
@@ -114,7 +114,7 @@ def getMoreInfo(req):
                                     #     if valid_ip(value):
                                     #         mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
 
-    print(mispattr)
+    #print(mispattr)
     return mispattr
 
 #Defining the handler

@@ -110,7 +110,7 @@ def getIP(ip):
         for hash in req["hashes"]:
             ret.append({"types": ["md5"], "values": [hash]})
 
-
+    print(ret)
     return ret
 
 
@@ -158,3 +158,5 @@ def introspection():
 def version():
     moduleinfo['config'] = moduleconfig
     return moduleinfo
+
+getIP("5.5.5.5")

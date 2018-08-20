@@ -22,6 +22,13 @@ comment = '%s: Enriched via Threat Intelligence Server'
 
 enrich_server_url = "https://arango-connector-arango.dev.c4intel.com"
 
+#checkIf hashes valid
+
+CheckValidHash = { "md5": re.compile('\b[a-z0-9a-f0-9]{32}\b'),
+                   "sha1": re.compile('\b[a-z0-9a-f0-9]{40}\b'),
+                   "sha256": re.compile('\b[a-z0-9a-f0-9]{64}\b')
+                 }
+
 
 def check_validurl(url):
     """
@@ -40,10 +47,21 @@ def check_validurl(url):
 
 #Ip validation check
 def valid_ip(ip):
+    """
+    Checks the IP it is valid before submitting to MISP
+    :param ip:
+    :return:
+    """
     m = re.match(r"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$", ip)
     return bool(m) and all(map(lambda n: 0 <= int(n) <= 255, m.groups()))
 
 def valid_domain(hostname):
+    """
+    Check domain length is greater than 255 bytes
+    Checks each octect
+    :param hostname:
+    :return:
+    """
     if len(hostname) > 255:
         return False
     if hostname[-1] == ".":
@@ -53,7 +71,16 @@ def valid_domain(hostname):
 
 
 def getMoreInfo(req):
+    #{'values': [u'6b936701cb256ffe121a8a71261b95a778ba41d24e73e2005e14991740cf84ea'], 'types': ['freetext']}
+    """
+    check the the response from Threat intel and parse url, ip, hashes and domain and return
+    as list with pairing each parse value with type
+    :param req:
+    :return:
+    """
     global limit
+
+
     mispattr = []
 
     if "data" in req:
@@ -67,25 +94,26 @@ def getMoreInfo(req):
                                 for key, value in items.items():
                                     if key == "hostname":
                                         if valid_domain(value):
-                                            mispattr.append({"types": ["domain"],"values": value})
+                                            mispattr.append({"types": ["freetext"],"values": value})
 
                                     elif key == "url":
                                         if check_validurl(value):
-                                            mispattr.append({"types": ["url"], "values": value})
+                                            mispattr.append({"types": ["freetext"], "values": value})
 
                                     elif key == "ip":
                                         if valid_ip(value):
                                             mispattr.append({"types": ["ip-dst","ip-src"], "values": value})
 
                                     elif key == "sha256":
-                                        mispattr.append({"types": ["sha256"], "values": value})
+                                        #sha256
+                                        mispattr.append({"types": ["freetext"], "values": value})
 
                                     elif key == "sha1":
-                                        mispattr.append({"types": ["sha"], "values": value})
+                                        mispattr.append({"types": ["freetext"], "values": value})
 
                                     elif key == "md5":
-                                        mispattr.append({"types": ["md5"], "values": value})
-    #print(mispattr)
+                                        mispattr.append({"types": ["freetext"], "values": value})
+    print(mispattr)
     return mispattr
 
 #Defining the handler
@@ -230,3 +258,4 @@ def version():
     moduleinfo['config'] = moduleconfig
     return moduleinfo
 
+getIP("5.5.5.5","Y3lzaXZtaXNwOjdodEFSMlVAY2teQkwyJXo=","ip")

@@ -82,6 +82,7 @@ def getIP(ip, key, do_not_recurse=False):
     try:
         req.raise_for_status()
         req = req.json()
+
     except HTTPError as e:
         misperrors['error'] = str(e)
         return misperrors
@@ -90,12 +91,7 @@ def getIP(ip, key, do_not_recurse=False):
         # Nothing found
         return []
 
-    if "resolutions" in req:
-        for res in req["resolutions"][:limit]:
-            toReturn.append({"types": ["domain"], "values": [res["hostname"]], "comment": comment % ip})
-            # Pivot from here to find all domain info
-            if not do_not_recurse:
-                toReturn += getDomain(res["hostname"], key, True)
+
 
     toReturn += getMoreInfo(req, key)
     return toReturn
@@ -186,10 +182,10 @@ def getMoreInfo(req, key):
             r.append({"types": ["malware-sample"],
                       "categories": ["Payload delivery"],
                       "values": data["submission_names"],
-                      "data": str(base64.b64encode(malsample), 'utf-8')
+                      "data": str(base64.b64encode(malsample))
                       }
                      )
-
+    print(r)
     return r
 
 
@@ -200,3 +196,6 @@ def introspection():
 def version():
     moduleinfo['config'] = moduleconfig
     return moduleinfo
+
+
+getIP("5.5.5.5", "c24bae7bff5d1f5e8ccaee62aef9a5093cf1fb02558611a9278f2a744ff42b7c", do_not_recurse=False)
